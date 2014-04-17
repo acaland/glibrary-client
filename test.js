@@ -4,7 +4,7 @@ var glibrary = require('./lib/glibrary');
 
 function main() {
 	var response = glibrary.uploadFileSync({filename: 'test.js', vo: 'vo.dch-rp.eu', relativePath: 'test/'});
-	//console.log(response);
+	console.log(response);
 	if (response.status == 'success') {
 		console.log("upload completed");
 		glibrary.createEntrySync({
@@ -54,7 +54,7 @@ function apiTest() {
 }
 
 function uploadAndRegisterTest() {
-	var response = glibrary.uploadAndRegister({
+	var response = glibrary.uploadAndRegisterSync({
 		filename: 'test.js',
 		repo: 'EEE',
 		type: 'Bin',
@@ -72,9 +72,10 @@ function uploadAndRegisterTest() {
 				StopTime: '2013-10-04 03:32'
 		}
 	});
+	//console.log("sono qui");
 	console.log(response);
 }
 
 
-sync.fiber(main);
+sync.fiber(uploadAndRegisterTest);
 
