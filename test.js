@@ -55,7 +55,7 @@ function apiTest() {
 
 function uploadAndRegisterTest() {
 	var response = glibrary.uploadAndRegisterSync({
-		filename: 'test.js',
+		filename: process.argv[2] || process.argv[1],
 		repo: 'EEE',
 		type: 'Bin',
 		metadata: {
@@ -76,6 +76,14 @@ function uploadAndRegisterTest() {
 	console.log(response);
 }
 
+glibrary.configure({
+        //defaultStorage: 'se.reef.man.poznan.pl',
+        defaultStorage: 'prod-se-03.ct.infn.it',
+        //defaultVO: 'vo.dch-rp.eu',
+        defaultVO: 'vo.earthserver.eu',
+        //defaultRootPath: '/dpm/reef.man.poznan.pl/home/'      
+        defaultRootPath: '/dpm/ct.infn.it/home/'
+});
 
 sync.fiber(uploadAndRegisterTest);
 
