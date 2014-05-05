@@ -3,9 +3,7 @@ var glibrary = require('./lib/glibrary');
 var exec = require('child_process').exec;
 var fs = require('fs');
 
-sync(fs, 'stat');
 var execSync = sync(exec);
-//sync(child_process, 'exec');
 
 
 function main() {
@@ -94,7 +92,7 @@ function uploadAndRegisterRawData() {
 		console.log("path is a required parameter");
 		return;
 	}
-	//var results = child_process.exec('ls -1 *.bin'); //, function(err, stdout, stderr) {
+	
 	try {
 		process.chdir(path);
 		console.log("Current directory: " + process.cwd());
@@ -106,7 +104,7 @@ function uploadAndRegisterRawData() {
 	}
 	var files = stdout.split('\n');
 	files.pop(); // remove the last empty line
-	//console.log(files);
+	
 	for (var i=0; i < files.length; i++) {
 		console.log("Processing: " + files[i]);
 		var mtime = fs.statSync(files[i]).mtime;
@@ -133,7 +131,6 @@ function uploadAndRegisterRawData() {
 			console.log("Upload failed for " + files[i]);
 			return;
 		}
-		
 	}
 }
 
@@ -146,8 +143,6 @@ glibrary.configure({
         //defaultRootPath: '/dpm/reef.man.poznan.pl/home/'      
         defaultRootPath: '/dpm/ct.infn.it/home/'
 });
-
-
 
 
 
