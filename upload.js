@@ -322,6 +322,7 @@ function uploadAndRegister2TTs(path) {
 			 	filename: files[i],
 			 	repo: 'EEE',
 			 	type: '2tt',
+				relativePath: 'glibrary/EEE/2tt',
 			 	metadata: metadata
 			});
 			console.log(response);
@@ -440,8 +441,8 @@ function main() {
 	//uploadAndRegisterDailyTimFile(path);
 	//uploadAndRegisterSumFiles(path + '/sum');
 	//uploadAndRegisterOutFiles(path + '/out');
-	//uploadAndRegister2TTs(path + '/2tt');
-	uploadAndRegisterTIMs(path + '/tim');
+	uploadAndRegister2TTs(path + '/2tt');
+	//uploadAndRegisterTIMs(path + '/tim');
 }
 
 
