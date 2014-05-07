@@ -41,7 +41,7 @@ function uploadAndRegisterRawData() {
 	files.pop(); // remove the last empty line
 	
 	for (var i=0; i < files.length; i++) {
-		console.log("Processing: " + files[i]);
+		console.log("\nProcessing: " + files[i]);
 		var mtime = fs.statSync(files[i]).mtime;
 		var metadata = {
 			FileName: files[i],
@@ -63,9 +63,10 @@ function uploadAndRegisterRawData() {
 			});
 			console.log(response);
 		} catch(e) {
-			console.log(e);
 			console.log("Upload failed for " + files[i]);
-			return;
+			console.log(e);
+			
+			//return;
 		}
 	}
 }
@@ -86,7 +87,7 @@ function uploadAndRegisterErrorLogs(path) {
 	var file = fs.readFileSync('ErrorLog.txt');
 	
 	var data = file.toString().split('\n');
-	console.log("error lines:" + data);
+	console.log("Error lines:\n" + data);
 	var errors = [];
 	var location = "", capDate = "";
 	if (data[0].indexOf("\t") != -1) {
@@ -108,7 +109,7 @@ function uploadAndRegisterErrorLogs(path) {
 		}
 	}
 	var remoteFilename = location + '-' + capDate + '-ErrorLog.txt';
-	console.log("error types:" + errors);
+	console.log("\nError types:\n" + errors);
 	var metadata = {
 		FileName: remoteFilename,
         SubmissionDate: formatDate(new Date()),
@@ -211,7 +212,7 @@ function uploadAndRegisterSumFiles (path) {
 	files.pop(); // remove the last empty line
 	
 	for (var i=0; i < files.length; i++) {
-		console.log("Processing: " + files[i]);
+		console.log("\nProcessing: " + files[i]);
 		var mtime = fs.statSync(files[i]).mtime;
 		var metadata = {
 			FileName: files[i],
@@ -236,7 +237,7 @@ function uploadAndRegisterSumFiles (path) {
 		} catch(e) {
 			console.log(e);
 			console.log("Upload failed for " + files[i]);
-			return;
+			//return;
 		}
 	}	
 }
@@ -256,7 +257,7 @@ function uploadAndRegisterOutFiles (path) {
 	files.pop(); // remove the last empty line
 	
 	for (var i=0; i < files.length; i++) {
-		console.log("Processing: " + files[i]);
+		console.log("\nProcessing: " + files[i]);
 
 		var file = fs.readFileSync(files[i]);
 		var data = file.toString().split('\n');
@@ -285,7 +286,7 @@ function uploadAndRegisterOutFiles (path) {
 		} catch(e) {
 			console.log(e);
 			console.log("Upload failed for " + files[i]);
-			return;
+			//return;
 		}
 	}	
 
@@ -295,7 +296,7 @@ function uploadAndRegister2TTs(path) {
 
 	try {
 		process.chdir(path);
-		console.log("Current directory: " + process.cwd());
+		console.log("\nCurrent directory: " + process.cwd());
 		var stdout = execSync('ls -1 *.2tt');
 		//console.log(JSON.stringify(stdout));
 	} catch(err) {
@@ -336,7 +337,7 @@ function uploadAndRegister2TTs(path) {
 		} catch(e) {
 			console.log(e);
 			console.log("Upload failed for " + files[i]);
-			return;
+			//return;
 		}
 	}	
 }
@@ -357,7 +358,7 @@ function captureRateForEvent(dailytim, runNum) {
 	var endRunRow = dailytim[startRunRowIndex + 1].split('\t');
 
 	if (startRunRow[1] != runNum || endRunRow[1] != runNum) {
-		console("cannot find the correct run row into the daily tim file");
+		console.log("\n\ncannot find the correct run row into the daily tim file\n\n");
 		return NaN;
 	};
 	var eventNum = endRunRow[2];
@@ -371,7 +372,7 @@ function uploadAndRegisterTIMs(path) {
 
 	try {
 		process.chdir(path);
-		console.log("Current directory: " + process.cwd());
+		console.log("\nCurrent directory: " + process.cwd());
 		var stdout = execSync('ls -1 *.tim');
 		//console.log(JSON.stringify(stdout));
 	} catch(err) {
@@ -420,7 +421,7 @@ function uploadAndRegisterTIMs(path) {
 		} catch(e) {
 			console.log(e);
 			console.log("Upload failed for " + files[i]);
-			return;
+			//return;
 		}
 	}	
 }
@@ -442,13 +443,20 @@ function main() {
                 console.log("Example: node upload.js ../2013/2013-01-01");
                 return;
         }
-	path = path_module.resolve(path); 		
+	path = path_module.resolve(path); 
+	console.log("\n\nStarting to upload Raw Files");		
 	uploadAndRegisterRawData(path);
+	console.log("\n\nStarting to upload ErrorLog");
 	uploadAndRegisterErrorLogs(path);
+	console.log("\n\nStarting to upload DailyTim File");
 	uploadAndRegisterDailyTimFile(path);
+	console.log("\n\nStarting to upload Sum Files");
 	uploadAndRegisterSumFiles(path + '/sum');
+	console.log("\n\nStarting to upload Out Files");
 	uploadAndRegisterOutFiles(path + '/out');
+	console.log("\n\nStarting to upload 2tt Files");
 	uploadAndRegister2TTs(path + '/2tt');
+	console.log("\n\nStarting to upload Tim Files");
 	uploadAndRegisterTIMs(path + '/tim');
 }
 
