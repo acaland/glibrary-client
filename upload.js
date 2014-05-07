@@ -89,11 +89,18 @@ function uploadAndRegisterErrorLogs(path) {
 	console.log("error lines:" + data);
 	var errors = [];
 	var location = "", capDate = "";
+	if (data[0].indexOf("\t") != -1) {
+		var splitter = "\t";	
+		var infoIdx = 2;
+	} else {
+		var splitter = " - ";
+		var infoIdx = 1;
+	}
 	for (var i=0; i < data.length; i++) {
-		var line = data[i].split('\t');
+		var line = data[i].split(splitter);
 		if (!location) {
-			location = line[2].substr(0, xIndexOf("-", line[2], 2));
-			capDate = line[2].substr(xIndexOf("-", line[2], 2) + 1, 10);
+			location = line[infoIdx].substr(0, xIndexOf("-", line[infoIdx], 2));
+			capDate = line[infoIdx].substr(xIndexOf("-", line[infoIdx], 2) + 1, 10);
 		}
 		var error = line.pop();
 		if (error) {
@@ -321,7 +328,7 @@ function uploadAndRegister2TTs(path) {
 			var response = glibrary.uploadAndRegisterSync({
 			 	filename: files[i],
 			 	repo: 'EEE',
-			 	type: '2tt',
+			 	type: 'tt',
 				relativePath: 'glibrary/EEE/2tt',
 			 	metadata: metadata
 			});
@@ -435,14 +442,14 @@ function main() {
                 console.log("Example: node upload.js ../2013/2013-01-01");
                 return;
         }
-	
-	//uploadAndRegisterRawData(path);
-	//uploadAndRegisterErrorLogs(path);
-	//uploadAndRegisterDailyTimFile(path);
-	//uploadAndRegisterSumFiles(path + '/sum');
-	//uploadAndRegisterOutFiles(path + '/out');
+	path = path_module.resolve(path); 		
+	uploadAndRegisterRawData(path);
+	uploadAndRegisterErrorLogs(path);
+	uploadAndRegisterDailyTimFile(path);
+	uploadAndRegisterSumFiles(path + '/sum');
+	uploadAndRegisterOutFiles(path + '/out');
 	uploadAndRegister2TTs(path + '/2tt');
-	//uploadAndRegisterTIMs(path + '/tim');
+	uploadAndRegisterTIMs(path + '/tim');
 }
 
 
