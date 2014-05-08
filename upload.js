@@ -5,6 +5,7 @@ var fs = require('fs');
 var path_module = require('path');
 
 var execSync = sync(exec);
+var scribe = require('./scribe');
 
 
 function formatDate(date) {
@@ -63,8 +64,8 @@ function uploadAndRegisterRawData() {
 			});
 			console.log(response);
 		} catch(e) {
-			console.log("Upload failed for " + files[i]);
-			console.log(e);
+			console.error("Upload failed for " + files[i]);
+			console.error(e);
 			
 			//return;
 		}
@@ -132,8 +133,8 @@ function uploadAndRegisterErrorLogs(path) {
               });
               console.log(response);
               } catch(e) {
-                    console.log(e);
-                    console.log("Upload failed for " + "ErrorLog.txt");
+                    console.error(e);
+                    console.error("Upload failed for " + "ErrorLog.txt");
                     return;
              } 
 
@@ -150,7 +151,7 @@ function uploadAndRegisterDailyTimFile(path) {
 	try {
 		var timfile = execSync('ls -1 *-tim.txt').trim();
 	} catch(e) {
-		console.log("Cannot find any tim file in the current directory");
+		console.error("Cannot find any tim file in the current directory: " + path);
 		return;
 	}
 	
@@ -191,8 +192,8 @@ function uploadAndRegisterDailyTimFile(path) {
               });
               console.log(response);
               } catch(e) {
-                    console.log(e);
-                    console.log("Upload failed for " + timfile);
+                    console.error(e);
+                    console.error("Upload failed for " + timfile);
                     return;
              } 
 }
@@ -235,8 +236,8 @@ function uploadAndRegisterSumFiles (path) {
 			});
 			console.log(response);
 		} catch(e) {
-			console.log(e);
-			console.log("Upload failed for " + files[i]);
+			console.error(e);
+			console.error("Upload failed for " + files[i]);
 			//return;
 		}
 	}	
@@ -272,7 +273,7 @@ function uploadAndRegisterOutFiles (path) {
 			FileType: 'out',
 			CaptureLocation: files[i].substr(0, xIndexOf("-", files[i], 2)), 
 			CaptureDate: files[i].substr(xIndexOf("-", files[i], 2) + 1, 10),
-			NumOfEvents: data.length
+			NumOfEvents: data.length - 1 // don't count the header line
 		} 
 		console.log(metadata);
 		try {
@@ -284,8 +285,8 @@ function uploadAndRegisterOutFiles (path) {
 			});
 			console.log(response);
 		} catch(e) {
-			console.log(e);
-			console.log("Upload failed for " + files[i]);
+			console.error(e);
+			console.error("Upload failed for " + files[i]);
 			//return;
 		}
 	}	
@@ -322,7 +323,7 @@ function uploadAndRegister2TTs(path) {
 			FileType: '2tt',
 			CaptureLocation: files[i].substr(0, xIndexOf("-", files[i], 2)), 
 			CaptureDate: files[i].substr(xIndexOf("-", files[i], 2) + 1, 10),
-			NumOfEvents: data.length
+			NumOfEvents: data.length - 1
 		} 
 		console.log(metadata);
 		try {
@@ -335,8 +336,8 @@ function uploadAndRegister2TTs(path) {
 			});
 			console.log(response);
 		} catch(e) {
-			console.log(e);
-			console.log("Upload failed for " + files[i]);
+			console.error(e);
+			console.error("Upload failed for " + files[i]);
 			//return;
 		}
 	}	
@@ -419,8 +420,8 @@ function uploadAndRegisterTIMs(path) {
 			});
 			console.log(response);
 		} catch(e) {
-			console.log(e);
-			console.log("Upload failed for " + files[i]);
+			console.error(e);
+			console.error("Upload failed for " + files[i]);
 			//return;
 		}
 	}	
@@ -438,25 +439,26 @@ glibrary.configure({
 function main() {
 	var path = process.argv[2]; //read the path from command line
         if (!path) {
-                console.log("Usage: node upload.js <path>");
+                console.info("[INFO]Usage: node upload.js <path>");
                 console.log("\nwhere <path> is the directory containing the daily run");
                 console.log("Example: node upload.js ../2013/2013-01-01");
                 return;
         }
+
 	path = path_module.resolve(path); 
-	console.log("\n\nStarting to upload Raw Files");		
+	console.info("\n\nStarting to upload Raw Files");		
 	uploadAndRegisterRawData(path);
-	console.log("\n\nStarting to upload ErrorLog");
+	console.info("\n\nStarting to upload ErrorLog");
 	uploadAndRegisterErrorLogs(path);
-	console.log("\n\nStarting to upload DailyTim File");
+	console.info("\n\nStarting to upload DailyTim File");
 	uploadAndRegisterDailyTimFile(path);
-	console.log("\n\nStarting to upload Sum Files");
+	console.info("\n\nStarting to upload Sum Files");
 	uploadAndRegisterSumFiles(path + '/sum');
-	console.log("\n\nStarting to upload Out Files");
+	console.info("\n\nStarting to upload Out Files");
 	uploadAndRegisterOutFiles(path + '/out');
-	console.log("\n\nStarting to upload 2tt Files");
+	console.info("\n\nStarting to upload 2tt Files");
 	uploadAndRegister2TTs(path + '/2tt');
-	console.log("\n\nStarting to upload Tim Files");
+	console.info("\n\nStarting to upload Tim Files");
 	uploadAndRegisterTIMs(path + '/tim');
 }
 
